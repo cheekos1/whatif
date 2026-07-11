@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const http = require('http');
 const { generateCompatibilityGif } = require('./compatibility');
+const { generateQuestionImage } = require('./questionImage');
 
 // Create a new client instance
 const client = new Client({
@@ -231,53 +232,37 @@ client.on('messageCreate', async (message) => {
         }
         // Check if the message contains "ماذا لو"
         else if (message.content.includes('ماذا لو')) {
-            // Get a random what-if sentence
             const randomSentence = getRandomWhatIfSentence();
-            
-            // Create the embed with user and guild info
-            const embed = createWhatIfEmbed(randomSentence, message.author, message.guild);
-            
-            // Send the embed as a reply
-            await message.reply({ embeds: [embed] });
-            
+            const avatarUrl = message.author.displayAvatarURL({ extension: 'png', size: 256 });
+            const imageBuffer = await generateQuestionImage(randomSentence, avatarUrl);
+            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.png' });
+            await message.reply({ files: [attachment] });
             console.log(`📝 Sent random "ماذا لو" sentence to ${message.author.tag} in ${message.guild?.name || 'DM'}`);
         }
         // Check if the message contains "لو خيروك"
         else if (message.content.includes('لو خيروك')) {
-            // Make sure we have choices sentences to choose from
             if (choicesSentences.length === 0) {
                 await message.reply('❌ عذرًا، لا توجد أسئلة "لو خيروك" متاحة حاليًا.');
                 return;
             }
-            
-            // Get a random choice sentence
             const randomSentence = getRandomChoiceSentence();
-            
-            // Create the embed with user and guild info
-            const embed = createChoiceEmbed(randomSentence, message.author, message.guild);
-            
-            // Send the embed as a reply
-            await message.reply({ embeds: [embed] });
-            
+            const avatarUrl = message.author.displayAvatarURL({ extension: 'png', size: 256 });
+            const imageBuffer = await generateQuestionImage(randomSentence, avatarUrl);
+            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.png' });
+            await message.reply({ files: [attachment] });
             console.log(`📝 Sent random "لو خيروك" sentence to ${message.author.tag} in ${message.guild?.name || 'DM'}`);
         }
         // Check if the message contains "من أكثر"
         else if (message.content.includes('من اكثر')) {
-            // Make sure we have men akthar sentences to choose from
             if (menAktharSentences.length === 0) {
                 await message.reply('❌ عذرًا، لا توجد أسئلة "من أكثر" متاحة حاليًا.');
                 return;
             }
-            
-            // Get a random men akthar sentence
             const randomSentence = getRandomMenAktharSentence();
-            
-            // Create the embed with user and guild info
-            const embed = createMenAktharEmbed(randomSentence, message.author, message.guild);
-            
-            // Send the embed as a reply
-            await message.reply({ embeds: [embed] });
-            
+            const avatarUrl = message.author.displayAvatarURL({ extension: 'png', size: 256 });
+            const imageBuffer = await generateQuestionImage(randomSentence, avatarUrl);
+            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.png' });
+            await message.reply({ files: [attachment] });
             console.log(`📝 Sent random "من أكثر" sentence to ${message.author.tag} in ${message.guild?.name || 'DM'}`);
         }
     } catch (error) {

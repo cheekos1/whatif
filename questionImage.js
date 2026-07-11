@@ -1,0 +1,94 @@
+const { createCanvas, loadImage, registerFont } = require('canvas');
+const path = require('path');
+const https = require('https');
+const http = require('http');
+
+registerFont(path.join(__dirname, 'Tajawal-Bold.ttf'), { family: 'Tajawal', weight: 'bold' });
+registerFont(path.join(__dirname, 'Tajawal-Regular.ttf'), { family: 'Tajawal', weight: 'normal' });
+
+function fetchImage(url) {
+    return new Promise((resolve, reject) => {
+        const client = url.startsWith('https') ? https : http;
+        client.get(url, (res) => {
+            const chunks = [];
+            res.on('data', (chunk) => chunks.push(chunk));
+            res.on('end', () => resolve(Buffer.concat(chunks)));
+            res.on('error', reject);
+        }).on('error', reject);
+    });
+}
+
+function wrapText(ctx, text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    for (const word of words) {
+        const testLine = currentLine ? currentLine + ' ' + word : word;
+        const metrics = ctx.measureText(testLine);
+        if (metrics.width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+        } else {
+            currentLine = testLine;
+        }
+    }
+    if (currentLine) lines.push(currentLine);
+    return lines;
+}
+
+async function generateQuestionImage(questionText, avatarUrl) {
+    const width = 1672;
+    const height = 941;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext('2d');
+
+    const template = await loadImage(await fetchImage('file://' + path.join(__dirname, 'template.png')));
+    ctx.drawImage(template, 0, 0, width, height);
+
+    if (avatarUrl) {
+        const avatar = await loadImage(await fetchImage(avatarUrl));
+        const circleX = 836;
+        const circleY = 196;
+        const circleW = 216;
+        const circleH = 224;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(circleX + circleW / 2, circleY + circleH / 2, circleW / 2, circleH / 2, 0, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(avatar, circleX, circleY, circleW, circleH);
+        ctx.restore();
+    }
+
+    const maxWidth = 1200;
+    const fontSize = 52;
+    ctx.font = `bold ${fontSize}px Tajawal`;
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+
+    const lines = wrapText(ctx, questionText, maxWidth);
+    const lineHeight = fontSize * 1.5;
+    const totalTextHeight = lines.length * lineHeight;
+    const startY = 600 + (250 - totalTextHeight) / 2;
+
+    for (let i = 0; i < lines.length; i++) {
+        const rtlLine = lines[i].split('').reverse().join('');
+        ctx.fillText(rtlLine, width / 2, startY + i * lineHeight);
+    }
+
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+
+    return canvas.toBuffer('image/png');
+}
+
+module.exports = { generateQuestionImage };
