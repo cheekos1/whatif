@@ -54,8 +54,8 @@ async function generateQuestionImage(questionText, avatarUrl) {
 
     if (avatarUrl) {
         const avatar = await loadImage(await fetchImage(avatarUrl));
-        const circleX = 580;
-        const circleY = 126;
+        const circleX = 540;
+        const circleY = 100;
         const circleW = 155;
         const circleH = 161;
 
