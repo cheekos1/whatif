@@ -212,25 +212,56 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
         ctx.lineWidth = 4;
         ctx.stroke();
 
-        const barRadius = 80;
+        const barRadius = 55;
         drawCircularProgressBar(ctx, 200, 200, barRadius, progress, color);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 36px Arial';
+        ctx.font = 'bold 30px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(`${currentPercent}%`, 200, 200);
 
-        ctx.font = 'bold 24px Arial';
+        ctx.font = 'bold 20px Arial';
         ctx.fillStyle = color;
-        ctx.fillText('التطابق', 200, 350);
+        ctx.fillText('التطابق', 200, 330);
 
         if (frame < totalFrames) {
             encoder.addFrame(ctx.getImageData(0, 0, width, height).data);
         }
     }
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) {
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(0, 0, width, height);
+
+        drawParticles(ctx, particles, width, height, i);
+
+        drawCircularAvatar(ctx, avatar1, 100, 160, avatarRadius);
+        ctx.beginPath();
+        ctx.arc(100, 160, avatarRadius + 3, 0, Math.PI * 2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        drawCircularAvatar(ctx, avatar2, 300, 160, avatarRadius);
+        ctx.beginPath();
+        ctx.arc(300, 160, avatarRadius + 3, 0, Math.PI * 2);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        drawCircularProgressBar(ctx, 200, 200, barRadius, 1, color);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 30px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${finalPercent}%`, 200, 200);
+
+        ctx.font = 'bold 20px Arial';
+        ctx.fillStyle = color;
+        ctx.fillText('التطابق', 200, 330);
+
         encoder.addFrame(ctx.getImageData(0, 0, width, height).data);
     }
 
