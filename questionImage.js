@@ -57,7 +57,7 @@ async function generateQuestionImage(questionText, avatarUrl) {
 
         ctx.save();
         ctx.beginPath();
-        ctx.ellipse(circleX + circleW / 2, circleY + circleH / 2, circleW / 2, circleH / 2, 0, 0, Math.PI * 2);
+        ctx.arc(circleX + circleW / 2, circleY + circleH / 2, Math.min(circleW, circleH) / 2, 0, Math.PI * 2);
         ctx.closePath();
         ctx.clip();
         ctx.drawImage(avatar, circleX, circleY, circleW, circleH);
@@ -81,8 +81,7 @@ async function generateQuestionImage(questionText, avatarUrl) {
     const startY = 600 + (250 - totalTextHeight) / 2;
 
     for (let i = 0; i < lines.length; i++) {
-        const rtlLine = lines[i].split('').reverse().join('');
-        ctx.fillText(rtlLine, width / 2, startY + i * lineHeight);
+        ctx.fillText(lines[i], width / 2, startY + i * lineHeight);
     }
 
     ctx.shadowColor = 'transparent';
