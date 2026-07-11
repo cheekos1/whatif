@@ -54,6 +54,117 @@ function getColorFromPercentage(percent) {
     return '#ff69b4';
 }
 
+function getEmojisForPercentage(percent) {
+    if (percent < 25) return ['💔', '😭', '😢', '💔', '😿'];
+    if (percent < 50) return ['🤔', '😐', '🤷', '❔', '😑'];
+    if (percent < 75) return ['😊', '💫', '⭐', '🌟', '✨'];
+    return ['❤️', '💕', '💗', '💖', '💘'];
+}
+
+function drawHeart(ctx, x, y, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x, y + size * 0.3);
+    ctx.bezierCurveTo(x, y, x - size, y, x - size, y + size * 0.3);
+    ctx.bezierCurveTo(x - size, y + size * 0.6, x, y + size, x, y + size * 1.2);
+    ctx.bezierCurveTo(x, y + size, x + size, y + size * 0.6, x + size, y + size * 0.3);
+    ctx.bezierCurveTo(x + size, y, x, y, x, y + size * 0.3);
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawStar(ctx, x, y, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+        const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+        const px = x + size * Math.cos(angle);
+        const py = y + size * Math.sin(angle);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+}
+
+function drawBrokenHeart(ctx, x, y, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x, y + size * 0.3);
+    ctx.bezierCurveTo(x, y, x - size, y, x - size, y + size * 0.3);
+    ctx.bezierCurveTo(x - size, y + size * 0.6, x, y + size, x, y + size * 1.2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(x, y + size * 0.3);
+    ctx.bezierCurveTo(x, y, x + size, y, x + size, y + size * 0.3);
+    ctx.bezierCurveTo(x + size, y + size * 0.6, x, y + size, x, y + size * 1.2);
+    ctx.fill();
+    ctx.strokeStyle = '#1a1a2e';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + 2, y);
+    ctx.lineTo(x - 3, y + size);
+    ctx.stroke();
+    ctx.restore();
+}
+
+function drawSparkle(ctx, x, y, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x, y - size);
+    ctx.lineTo(x + size * 0.3, y - size * 0.3);
+    ctx.lineTo(x + size, y);
+    ctx.lineTo(x + size * 0.3, y + size * 0.3);
+    ctx.lineTo(x, y + size);
+    ctx.lineTo(x - size * 0.3, y + size * 0.3);
+    ctx.lineTo(x - size, y);
+    ctx.lineTo(x - size * 0.3, y - size * 0.3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+}
+
+const shapeDrawers = [drawHeart, drawStar, drawBrokenHeart, drawSparkle];
+
+function initParticles(count, width, height) {
+    const particles = [];
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: 6 + Math.random() * 10,
+            speed: 0.5 + Math.random() * 1.5,
+            wobble: Math.random() * Math.PI * 2,
+            wobbleSpeed: 0.02 + Math.random() * 0.04,
+            shapeIndex: Math.floor(Math.random() * shapeDrawers.length),
+            opacity: 0.3 + Math.random() * 0.5,
+        });
+    }
+    return particles;
+}
+
+function drawParticles(ctx, particles, width, height, color, frame) {
+    for (const p of particles) {
+        p.y -= p.speed;
+        p.wobble += p.wobbleSpeed;
+        const wx = Math.sin(p.wobble) * 15;
+
+        if (p.y < -p.size * 2) {
+            p.y = height + p.size * 2;
+            p.x = Math.random() * width;
+        }
+
+        ctx.globalAlpha = p.opacity;
+        shapeDrawers[p.shapeIndex](ctx, p.x + wx, p.y, p.size, color);
+    }
+    ctx.globalAlpha = 1;
+}
+
 async function generateCompatibilityGif(avatar1Url, avatar2Url) {
     const width = 400;
     const height = 400;
@@ -65,6 +176,8 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
 
     const finalPercent = Math.floor(Math.random() * 101);
     const color = getColorFromPercentage(finalPercent);
+
+    const particles = initParticles(25, width, height);
 
     const encoder = new GIFEncoder(width, height);
     encoder.start();
@@ -81,6 +194,8 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
 
         ctx.fillStyle = '#1a1a2e';
         ctx.fillRect(0, 0, width, height);
+
+        drawParticles(ctx, particles, width, height, color, frame);
 
         drawCircularAvatar(ctx, avatar1, 100, 160, avatarRadius);
         ctx.beginPath();
