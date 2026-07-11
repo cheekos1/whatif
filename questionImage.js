@@ -19,6 +19,10 @@ function fetchImage(url) {
     });
 }
 
+function stripEmojis(text) {
+    return text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}]/gu, '').trim();
+}
+
 function wrapText(ctx, text, maxWidth) {
     const words = text.split(' ');
     const lines = [];
@@ -50,8 +54,8 @@ async function generateQuestionImage(questionText, avatarUrl) {
 
     if (avatarUrl) {
         const avatar = await loadImage(await fetchImage(avatarUrl));
-        const circleX = 600;
-        const circleY = 141;
+        const circleX = 580;
+        const circleY = 126;
         const circleW = 155;
         const circleH = 161;
 
@@ -75,10 +79,11 @@ async function generateQuestionImage(questionText, avatarUrl) {
     ctx.shadowOffsetX = 2;
     ctx.shadowOffsetY = 2;
 
-    const lines = wrapText(ctx, questionText, maxWidth);
+    const cleanText = stripEmojis(questionText);
+    const lines = wrapText(ctx, cleanText, maxWidth);
     const lineHeight = fontSize * 1.5;
     const totalTextHeight = lines.length * lineHeight;
-    const startY = 430 + (180 - totalTextHeight) / 2;
+    const startY = 400 + (180 - totalTextHeight) / 2;
 
     for (let i = 0; i < lines.length; i++) {
         ctx.fillText(lines[i], width / 2, startY + i * lineHeight);
