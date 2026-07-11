@@ -188,6 +188,7 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
 
     const totalFrames = 20;
     const avatarRadius = 60;
+    const barRadius = 55;
 
     for (let frame = 0; frame <= totalFrames; frame++) {
         const progress = frame / totalFrames;
@@ -212,7 +213,6 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
         ctx.lineWidth = 4;
         ctx.stroke();
 
-        const barRadius = 55;
         drawCircularProgressBar(ctx, 200, 200, barRadius, progress, color);
 
         ctx.fillStyle = '#ffffff';
