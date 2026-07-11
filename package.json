@@ -1,0 +1,24 @@
+{
+  "name": "whatif-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord bot that responds with random 'ماذا لو' (What if) questions in Arabic",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "arabic",
+    "whatif",
+    "ماذا لو"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "discord.js": "^14.22.1",
+    "gif-encoder-2": "^1.0.5"
+  }
+}
