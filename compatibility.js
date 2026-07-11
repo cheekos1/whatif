@@ -148,7 +148,8 @@ function initParticles(count, width, height) {
     return particles;
 }
 
-function drawParticles(ctx, particles, width, height, color, frame) {
+function drawParticles(ctx, particles, width, height, frame) {
+    const shapeColors = ['#ff6b6b', '#ffd700', '#ff4757', '#ffffff'];
     for (const p of particles) {
         p.y -= p.speed;
         p.wobble += p.wobbleSpeed;
@@ -160,7 +161,7 @@ function drawParticles(ctx, particles, width, height, color, frame) {
         }
 
         ctx.globalAlpha = p.opacity;
-        shapeDrawers[p.shapeIndex](ctx, p.x + wx, p.y, p.size, color);
+        shapeDrawers[p.shapeIndex](ctx, p.x + wx, p.y, p.size, shapeColors[p.shapeIndex]);
     }
     ctx.globalAlpha = 1;
 }
@@ -177,15 +178,15 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
     const finalPercent = Math.floor(Math.random() * 101);
     const color = getColorFromPercentage(finalPercent);
 
-    const particles = initParticles(25, width, height);
+    const particles = initParticles(15, width, height);
 
     const encoder = new GIFEncoder(width, height);
     encoder.start();
     encoder.setRepeat(0);
-    encoder.setDelay(30);
+    encoder.setDelay(40);
     encoder.setQuality(10);
 
-    const totalFrames = 40;
+    const totalFrames = 20;
     const avatarRadius = 60;
 
     for (let frame = 0; frame <= totalFrames; frame++) {
@@ -195,7 +196,7 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
         ctx.fillStyle = '#1a1a2e';
         ctx.fillRect(0, 0, width, height);
 
-        drawParticles(ctx, particles, width, height, color, frame);
+        drawParticles(ctx, particles, width, height, frame);
 
         drawCircularAvatar(ctx, avatar1, 100, 160, avatarRadius);
         ctx.beginPath();
