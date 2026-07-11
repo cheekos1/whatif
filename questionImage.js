@@ -39,8 +39,8 @@ function wrapText(ctx, text, maxWidth) {
 }
 
 async function generateQuestionImage(questionText, avatarUrl) {
-    const width = 1672;
-    const height = 941;
+    const width = 1200;
+    const height = 675;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
@@ -50,10 +50,10 @@ async function generateQuestionImage(questionText, avatarUrl) {
 
     if (avatarUrl) {
         const avatar = await loadImage(await fetchImage(avatarUrl));
-        const circleX = 836;
-        const circleY = 196;
-        const circleW = 216;
-        const circleH = 224;
+        const circleX = 600;
+        const circleY = 141;
+        const circleW = 155;
+        const circleH = 161;
 
         ctx.save();
         ctx.beginPath();
@@ -64,8 +64,8 @@ async function generateQuestionImage(questionText, avatarUrl) {
         ctx.restore();
     }
 
-    const maxWidth = 1200;
-    const fontSize = 52;
+    const maxWidth = 860;
+    const fontSize = 38;
     ctx.font = `bold ${fontSize}px Tajawal`;
     ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
@@ -78,7 +78,7 @@ async function generateQuestionImage(questionText, avatarUrl) {
     const lines = wrapText(ctx, questionText, maxWidth);
     const lineHeight = fontSize * 1.5;
     const totalTextHeight = lines.length * lineHeight;
-    const startY = 600 + (250 - totalTextHeight) / 2;
+    const startY = 430 + (180 - totalTextHeight) / 2;
 
     for (let i = 0; i < lines.length; i++) {
         ctx.fillText(lines[i], width / 2, startY + i * lineHeight);
@@ -89,7 +89,7 @@ async function generateQuestionImage(questionText, avatarUrl) {
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
 
-    return canvas.toBuffer('image/png');
+    return canvas.toBuffer('image/jpeg', { quality: 0.85 });
 }
 
 module.exports = { generateQuestionImage };

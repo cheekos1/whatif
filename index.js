@@ -235,7 +235,7 @@ client.on('messageCreate', async (message) => {
             const randomSentence = getRandomWhatIfSentence();
             const avatarUrl = message.author.displayAvatarURL({ extension: 'png', size: 256 });
             const imageBuffer = await generateQuestionImage(randomSentence, avatarUrl);
-            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.png' });
+            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.jpg' });
             await message.reply({ files: [attachment] });
             console.log(`📝 Sent random "ماذا لو" sentence to ${message.author.tag} in ${message.guild?.name || 'DM'}`);
         }
@@ -248,7 +248,7 @@ client.on('messageCreate', async (message) => {
             const randomSentence = getRandomChoiceSentence();
             const avatarUrl = message.author.displayAvatarURL({ extension: 'png', size: 256 });
             const imageBuffer = await generateQuestionImage(randomSentence, avatarUrl);
-            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.png' });
+            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.jpg' });
             await message.reply({ files: [attachment] });
             console.log(`📝 Sent random "لو خيروك" sentence to ${message.author.tag} in ${message.guild?.name || 'DM'}`);
         }
@@ -261,7 +261,7 @@ client.on('messageCreate', async (message) => {
             const randomSentence = getRandomMenAktharSentence();
             const avatarUrl = message.author.displayAvatarURL({ extension: 'png', size: 256 });
             const imageBuffer = await generateQuestionImage(randomSentence, avatarUrl);
-            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.png' });
+            const attachment = new AttachmentBuilder(imageBuffer, { name: 'question.jpg' });
             await message.reply({ files: [attachment] });
             console.log(`📝 Sent random "من أكثر" sentence to ${message.author.tag} in ${message.guild?.name || 'DM'}`);
         }
