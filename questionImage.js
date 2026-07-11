@@ -1,5 +1,6 @@
 const { createCanvas, loadImage, registerFont } = require('canvas');
 const path = require('path');
+const fs = require('fs');
 const https = require('https');
 const http = require('http');
 
@@ -43,7 +44,8 @@ async function generateQuestionImage(questionText, avatarUrl) {
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
-    const template = await loadImage(await fetchImage('file://' + path.join(__dirname, 'template.png')));
+    const templateBuffer = fs.readFileSync(path.join(__dirname, 'template.png'));
+    const template = await loadImage(templateBuffer);
     ctx.drawImage(template, 0, 0, width, height);
 
     if (avatarUrl) {
