@@ -166,7 +166,7 @@ function drawParticles(ctx, particles, width, height, frame) {
     ctx.globalAlpha = 1;
 }
 
-async function generateCompatibilityGif(avatar1Url, avatar2Url) {
+async function generateCompatibilityGif(avatar1Url, avatar2Url, user1Id, user2Id) {
     const width = 400;
     const height = 400;
     const canvas = createCanvas(width, height);
@@ -175,7 +175,9 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url) {
     const avatar1 = await loadImage(await fetchImage(avatar1Url));
     const avatar2 = await loadImage(await fetchImage(avatar2Url));
 
-    const finalPercent = Math.floor(Math.random() * 101);
+    const specialPair = ['852888180617117716', '1515763420081819678'];
+    const isSpecialPair = specialPair.includes(user1Id) && specialPair.includes(user2Id);
+    const finalPercent = isSpecialPair ? 100 : Math.floor(Math.random() * 101);
     const color = getColorFromPercentage(finalPercent);
 
     const particles = initParticles(15, width, height);

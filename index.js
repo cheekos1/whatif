@@ -213,7 +213,7 @@ client.on('messageCreate', async (message) => {
                 const avatar1 = user1.displayAvatarURL({ extension: 'png', size: 256 });
                 const avatar2 = user2.displayAvatarURL({ extension: 'png', size: 256 });
 
-                const gifBuffer = await generateCompatibilityGif(avatar1, avatar2);
+                const gifBuffer = await generateCompatibilityGif(avatar1, avatar2, user1.id, user2.id);
 
                 const attachment = new AttachmentBuilder(gifBuffer, { name: 'compatibility.gif' });
 
