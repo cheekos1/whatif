@@ -2,6 +2,13 @@ const { createCanvas, loadImage } = require('canvas');
 const GIFEncoder = require('gif-encoder-2');
 const https = require('https');
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+function loadCompatibilityData() {
+    const dataPath = path.join(__dirname, 'compatibility_data.json');
+    return JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+}
 
 function fetchImage(url) {
     return new Promise((resolve, reject) => {
@@ -175,15 +182,10 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url, user1Id, user2Id
     const avatar1 = await loadImage(await fetchImage(avatar1Url));
     const avatar2 = await loadImage(await fetchImage(avatar2Url));
 
-    const specialPairs = [
-        ['852888180617117716', '1515763420081819678'],
-        ['1515763420081819678', '874460708207726592'],
-        ['852888180617117716', '824803185524080692'],
-        ['852888180617117716', '1152906605340393492'],
-        ['852888180617117716', '1398309482047475802'],
-        ['852888180617117716', '1119177321425948743']
-    ];
-    const isSpecialPair = specialPairs.some(pair => pair.includes(user1Id) && pair.includes(user2Id));
+    const data = loadCompatibilityData();
+    const isSpecialPair = data.special_pairs.some(pair => pair.includes(user1Id) && pair.includes(user2Id));
+    const alwaysZero = data.always_zero.includes(user1Id) || data.always_zero.includes(user2Id);
+    const finalPercent = isSpecialPair ? 100 : alwaysZero ? 0 : Math.floor(Math.random() * 101);
     const finalPercent = isSpecialPair ? 100 : Math.floor(Math.random() * 101);
     const color = getColorFromPercentage(finalPercent);
 
