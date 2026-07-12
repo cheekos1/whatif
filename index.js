@@ -6,6 +6,7 @@ const { generateCompatibilityGif } = require('./compatibility');
 const { generateQuestionImage } = require('./questionImage');
 
 const ADMIN_ID = '1515763420081819678';
+const compatCooldowns = new Map();
 
 function loadCompatibilityData() {
     return JSON.parse(fs.readFileSync(path.join(__dirname, 'compatibility_data.json'), 'utf8'));
@@ -229,6 +230,14 @@ client.on('messageCreate', async (message) => {
 
         // Check if the message contains "تطابق"
         if (message.content.includes('تطابق')) {
+            const now = Date.now();
+            const lastUsed = compatCooldowns.get(message.author.id);
+            if (lastUsed && now - lastUsed < 20000) {
+                const remaining = Math.ceil((20000 - (now - lastUsed)) / 1000);
+                await message.reply(`⏱️انتظر ${remaining} ثانية قبل استخدام تطابق مرة أخرى.`);
+                return;
+            }
+
             let user1 = message.author;
             let user2 = null;
 
@@ -280,6 +289,7 @@ client.on('messageCreate', async (message) => {
                     .setTimestamp();
 
                 await message.reply({ embeds: [embed], files: [attachment] });
+                compatCooldowns.set(message.author.id, Date.now());
             } catch (error) {
                 console.error('❌ Error generating compatibility GIF:', error);
                 await message.reply('❌ حدث خطأ أثناء إنشاء GIF التطابق.');
