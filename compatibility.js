@@ -177,7 +177,11 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url, user1Id, user2Id
 
     const specialPairs = [
         ['852888180617117716', '1515763420081819678'],
-        ['1515763420081819678', '874460708207726592']
+        ['1515763420081819678', '874460708207726592'],
+        ['852888180617117716', '824803185524080692'],
+        ['852888180617117716', '1152906605340393492'],
+        ['852888180617117716', '1398309482047475802'],
+        ['852888180617117716', '1119177321425948743']
     ];
     const isSpecialPair = specialPairs.some(pair => pair.includes(user1Id) && pair.includes(user2Id));
     const finalPercent = isSpecialPair ? 100 : Math.floor(Math.random() * 101);
