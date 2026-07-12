@@ -26,13 +26,25 @@ function buildPanelEmbed() {
         : 'لا يوجد مستخدمون';
 
     return new EmbedBuilder()
-        .setTitle('⚙️ ضبط التطابق')
+        .setTitle('ضبط التطابق')
         .addFields(
-            { name: '💯 الأزواج (100%)', value: pairsText, inline: true },
-            { name: '🚫 المستخدمون (0%)', value: zeroText, inline: true }
+            { name: 'الأزواج (100%)', value: pairsText, inline: true },
+            { name: 'المستخدمون (0%)', value: zeroText, inline: true }
         )
         .setColor('#FF69B4')
         .setTimestamp();
+}
+
+function buildPanelText() {
+    const data = loadCompatibilityData();
+    let pairsText = data.special_pairs.length > 0
+        ? data.special_pairs.map((p, i) => `${i + 1}. <@${p[0]}> + <@${p[1]}>`).join('\n')
+        : 'لا يوجد أزواج';
+    let zeroText = data.always_zero.length > 0
+        ? data.always_zero.map((id, i) => `${i + 1}. <@${id}>`).join('\n')
+        : 'لا يوجد مستخدمون';
+
+    return `**ضبط التطابق**\n\n**الأزواج (100%):**\n${pairsText}\n\n**المستخدمون (0%):**\n${zeroText}`;
 }
 
 // Create a new client instance
@@ -212,19 +224,19 @@ client.on('messageCreate', async (message) => {
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
                     .setCustomId('compat_add_pair')
-                    .setLabel('➕ إضافة زوج 100%')
+                    .setLabel('اضافة زوج 100%')
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
                     .setCustomId('compat_add_zero')
-                    .setLabel('➕ إضافة مستخدم 0%')
+                    .setLabel('اضافة مستخدم 0%')
                     .setStyle(ButtonStyle.Danger),
                 new ButtonBuilder()
                     .setCustomId('compat_remove')
-                    .setLabel('🗑️ حذف')
+                    .setLabel('حذف')
                     .setStyle(ButtonStyle.Secondary)
             );
 
-            await message.reply({ embeds: [buildPanelEmbed()], components: [row] });
+            await message.reply({ content: buildPanelText(), components: [row] });
             return;
         }
 
@@ -461,11 +473,11 @@ client.on('interactionCreate', async (interaction) => {
 
             data.special_pairs.push([id1, id2]);
             saveCompatibilityData(data);
-            await interaction.reply({ embeds: [buildPanelEmbed()], components: [
+            await interaction.reply({ content: buildPanelText(), components: [
                 new ActionRowBuilder().addComponents(
-                    new ButtonBuilder().setCustomId('compat_add_pair').setLabel('➕ إضافة زوج 100%').setStyle(ButtonStyle.Success),
-                    new ButtonBuilder().setCustomId('compat_add_zero').setLabel('➕ إضافة مستخدم 0%').setStyle(ButtonStyle.Danger),
-                    new ButtonBuilder().setCustomId('compat_remove').setLabel('🗑️ حذف').setStyle(ButtonStyle.Secondary)
+                    new ButtonBuilder().setCustomId('compat_add_pair').setLabel('اضافة زوج 100%').setStyle(ButtonStyle.Success),
+                    new ButtonBuilder().setCustomId('compat_add_zero').setLabel('اضافة مستخدم 0%').setStyle(ButtonStyle.Danger),
+                    new ButtonBuilder().setCustomId('compat_remove').setLabel('حذف').setStyle(ButtonStyle.Secondary)
                 )
             ]});
         }
@@ -481,11 +493,11 @@ client.on('interactionCreate', async (interaction) => {
 
             data.always_zero.push(id);
             saveCompatibilityData(data);
-            await interaction.reply({ embeds: [buildPanelEmbed()], components: [
+            await interaction.reply({ content: buildPanelText(), components: [
                 new ActionRowBuilder().addComponents(
-                    new ButtonBuilder().setCustomId('compat_add_pair').setLabel('➕ إضافة زوج 100%').setStyle(ButtonStyle.Success),
-                    new ButtonBuilder().setCustomId('compat_add_zero').setLabel('➕ إضافة مستخدم 0%').setStyle(ButtonStyle.Danger),
-                    new ButtonBuilder().setCustomId('compat_remove').setLabel('🗑️ حذف').setStyle(ButtonStyle.Secondary)
+                    new ButtonBuilder().setCustomId('compat_add_pair').setLabel('اضافة زوج 100%').setStyle(ButtonStyle.Success),
+                    new ButtonBuilder().setCustomId('compat_add_zero').setLabel('اضافة مستخدم 0%').setStyle(ButtonStyle.Danger),
+                    new ButtonBuilder().setCustomId('compat_remove').setLabel('حذف').setStyle(ButtonStyle.Secondary)
                 )
             ]});
         }
@@ -506,14 +518,14 @@ client.on('interactionCreate', async (interaction) => {
             const index = parseInt(interaction.values[0].replace('pair_', ''));
             data.special_pairs.splice(index, 1);
             saveCompatibilityData(data);
-            await interaction.update({ embeds: [buildPanelEmbed()], components: [] });
+            await interaction.update({ content: buildPanelText(), components: [] });
         }
 
         if (interaction.customId === 'remove_zero') {
             const index = parseInt(interaction.values[0].replace('zero_', ''));
             data.always_zero.splice(index, 1);
             saveCompatibilityData(data);
-            await interaction.update({ embeds: [buildPanelEmbed()], components: [] });
+            await interaction.update({ content: buildPanelText(), components: [] });
         }
     } catch (error) {
         console.error('❌ Error handling select menu:', error);
