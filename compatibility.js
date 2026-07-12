@@ -186,7 +186,6 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url, user1Id, user2Id
     const isSpecialPair = data.special_pairs.some(pair => pair.includes(user1Id) && pair.includes(user2Id));
     const alwaysZero = data.always_zero.includes(user1Id) || data.always_zero.includes(user2Id);
     const finalPercent = isSpecialPair ? 100 : alwaysZero ? 0 : Math.floor(Math.random() * 101);
-    const finalPercent = isSpecialPair ? 100 : Math.floor(Math.random() * 101);
     const color = getColorFromPercentage(finalPercent);
 
     const particles = initParticles(15, width, height);
