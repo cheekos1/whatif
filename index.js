@@ -203,7 +203,7 @@ client.on('messageCreate', async (message) => {
     
     try {
         // Check for admin panel command
-        if (message.content === 'ضبط تطابق') {
+        if (message.content.trim() === 'ضبط تطابق') {
             if (message.author.id !== ADMIN_ID) {
                 await message.reply('❌ هذا الأمر متاح للمسؤول فقط.');
                 return;
