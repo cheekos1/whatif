@@ -38,10 +38,10 @@ function buildPanelEmbed() {
 function buildPanelText() {
     const data = loadCompatibilityData();
     let pairsText = data.special_pairs.length > 0
-        ? data.special_pairs.map((p, i) => `${i + 1}. <@${p[0]}> + <@${p[1]}>`).join('\n')
+        ? data.special_pairs.map((p, i) => `${i + 1}. ${p[0]} + ${p[1]}`).join('\n')
         : 'لا يوجد أزواج';
     let zeroText = data.always_zero.length > 0
-        ? data.always_zero.map((id, i) => `${i + 1}. <@${id}>`).join('\n')
+        ? data.always_zero.map((id, i) => `${i + 1}. ${id}`).join('\n')
         : 'لا يوجد مستخدمون';
 
     return `**ضبط التطابق**\n\n**الأزواج (100%):**\n${pairsText}\n\n**المستخدمون (0%):**\n${zeroText}`;
