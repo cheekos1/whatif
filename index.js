@@ -6,6 +6,7 @@ const { generateCompatibilityGif } = require('./compatibility');
 const { generateQuestionImage } = require('./questionImage');
 
 const ADMIN_ID = '1515763420081819678';
+const GUILD_ID = '1134246644431474848';
 const compatCooldowns = new Map();
 
 function loadCompatibilityData() {
@@ -212,6 +213,7 @@ client.user.setPresence({
 client.on('messageCreate', async (message) => {
     // Ignore messages from bots
     if (message.author.bot) return;
+    if (message.guild && message.guild.id !== GUILD_ID) return;
     
     try {
         // Check for admin panel command
