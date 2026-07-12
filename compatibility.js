@@ -177,7 +177,8 @@ async function generateCompatibilityGif(avatar1Url, avatar2Url, user1Id, user2Id
 
     const specialPair = ['852888180617117716', '1515763420081819678'];
     const isSpecialPair = specialPair.includes(user1Id) && specialPair.includes(user2Id);
-    const finalPercent = isSpecialPair ? 100 : Math.floor(Math.random() * 101);
+    const alwaysZero = user1Id === '874207972925005844' || user2Id === '874207972925005844';
+    const finalPercent = isSpecialPair ? 100 : alwaysZero ? 0 : Math.floor(Math.random() * 101);
     const color = getColorFromPercentage(finalPercent);
 
     const particles = initParticles(15, width, height);
